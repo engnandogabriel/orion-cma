@@ -1,4 +1,7 @@
 import InfoSensor from '../../domain/entitis/InfoSensor';
+import { serverError, success } from '../../domain/Helpers/HttpHelpers';
+import HttpResponse from '../../domain/Protocols/HttpResponse';
+import HttpRequest from '../../domain/Protocols/HttpResquest';
 import SensorGateway from '../gateway/SensorGatewat';
 import UseCase from './UseCase';
 
@@ -7,13 +10,15 @@ export default class GetInfoSensorUseCase implements UseCase {
   constructor(sensorGateway: SensorGateway) {
     this.sensorGateway = sensorGateway;
   }
-  async execute(input: Input): Promise<InfoSensor[]> {
+  async execute(input: HttpRequest): Promise<HttpResponse> {
     try {
-      const data: InfoSensor[] = await this.sensorGateway.getInfoSensor(input.token, input.startDate, input.endDate, input.offset, input.softSensorId);
-      return data;
-    } catch (e) {
-      console.log(e);
-      throw new Error('');
+      const data: InfoSensor[] = await this.sensorGateway.getInfoSensor(input.body.token, input.body.startDate, input.body.endDate, input.body.offset, input.body.softSensorId);
+      return success({ message: 'Informações do Sensor', data: { data } });
+    } catch (error) {
+      if (error instanceof Error) {
+        return serverError(error);
+      }
+      return serverError(new Error('Unexpected Error'));
     }
   }
 }
