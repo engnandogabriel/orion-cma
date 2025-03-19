@@ -9,10 +9,10 @@ export default class ListAllDevicesUseCase implements UseCase {
   constructor(devicesGateway: DevicesGateway) {
     this.devicesGateway = devicesGateway;
   }
-  async execute(input: HttpRequest): Promise<HttpResponse> {
+  async execute(input: HttpRequest, dataInput: any): Promise<HttpResponse> {
     try {
-      const data = await this.devicesGateway.getAllDevices(input.body.token);
-      return success({ message: 'Lista de todos dispositivos', data: { data } });
+      const data = await this.devicesGateway.getAllDevices(dataInput.token);
+      return success({ message: 'Lista de todos dispositivos', data: { ...data } });
     } catch (error) {
       if (error instanceof Error) {
         return serverError(error);
@@ -21,7 +21,3 @@ export default class ListAllDevicesUseCase implements UseCase {
     }
   }
 }
-
-type Input = {
-  token: string;
-};

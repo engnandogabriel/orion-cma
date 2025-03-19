@@ -102,7 +102,13 @@ export default class Devices {
   public getSensor(): Sensor[] {
     return this.sensor;
   }
+  public setSensor(sensor: Sensor[]): void {
+    this.sensor = sensor;
+  }
   public getSensorSoft(): SensorSoft[] {
     return this.sensorSoft;
+  }
+  public setSensorSoft(sensorSoft: SensorSoft[]) {
+    this.sensorSoft = sensorSoft;
   }
 }

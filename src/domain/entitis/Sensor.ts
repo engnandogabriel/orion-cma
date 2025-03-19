@@ -8,7 +8,7 @@ export default class Sensor {
 
   private constructor(sensorId: string, sensorType: string, uom: string, channelNumber: string, customName: string, scadaTag: string) {
     this.sensorId = sensorId;
-    this.sensorType = sensorId;
+    this.sensorType = sensorType;
     this.uom = uom;
     this.channelNumber = channelNumber;
     this.customName = customName;

@@ -6,7 +6,6 @@ export default class AxiosAdpter implements HttpClient {
       const response = await axios.get(url, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } });
       return response.data;
     } catch (e: any) {
-      console.log(e)
       throw new Error(e.response.data.message);
     }
   }

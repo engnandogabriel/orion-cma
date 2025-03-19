@@ -1,19 +1,23 @@
 import Devices from '../../domain/entitis/Devices';
-import { serverError, success } from '../../domain/Helpers/HttpHelpers';
+import { success, serverError } from '../../domain/Helpers/HttpHelpers';
 import HttpResponse from '../../domain/Protocols/HttpResponse';
 import HttpRequest from '../../domain/Protocols/HttpResquest';
 import DevicesGateway from '../gateway/DevicesGateway';
 import UseCase from './UseCase';
 
-export default class GetDeviceBySerialNumberUseCase implements UseCase {
+export default class GetInfoSensorType implements UseCase {
   private devicesGateway: DevicesGateway;
   constructor(devicesGateway: DevicesGateway) {
     this.devicesGateway = devicesGateway;
   }
-  async execute(input: HttpRequest, dataInput: any): Promise<HttpResponse> {
+  async execute(input: HttpRequest, dataInput?: any): Promise<HttpResponse> {
     try {
       const data: Devices = await this.devicesGateway.getDeviceBySerialNumber(dataInput.token, input.params.serialNumber);
-      return success({ message: 'Dispositivo', data: { ...data } });
+      const sensor = data.getSensor().filter((device) => device.getSensorType().toLowerCase() === input.params.type);
+      const softSensor = data.getSensorSoft().filter((device) => device.getSensorType().toLowerCase() === input.params.type);
+      data.setSensor(sensor);
+      data.setSensorSoft(softSensor);
+      return success({ message: `Dispositivos do tipo ${input.params.type}`, data: { ...data } });
     } catch (error) {
       if (error instanceof Error) {
         return serverError(error);

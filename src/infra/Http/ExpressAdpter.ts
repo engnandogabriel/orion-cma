@@ -1,6 +1,6 @@
 import HttpServer from './HttpServer';
 import HttpResponse from '../../domain/Protocols/HttpResponse';
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 
 export default class ExpressAdpter implements HttpServer {

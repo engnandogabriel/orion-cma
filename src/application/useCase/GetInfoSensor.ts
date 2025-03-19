@@ -10,9 +10,9 @@ export default class GetInfoSensorUseCase implements UseCase {
   constructor(sensorGateway: SensorGateway) {
     this.sensorGateway = sensorGateway;
   }
-  async execute(input: HttpRequest): Promise<HttpResponse> {
+  async execute(input: HttpRequest, dataInput: any): Promise<HttpResponse> {
     try {
-      const data: InfoSensor[] = await this.sensorGateway.getInfoSensor(input.body.token, input.body.startDate, input.body.endDate, input.body.offset, input.body.softSensorId);
+      const data: InfoSensor[] = await this.sensorGateway.getInfoSensor(dataInput.token, input.query.startDate, input.query.endDate, input.query.offset, input.query.softSensorId);
       return success({ message: 'Informações do Sensor', data: { data } });
     } catch (error) {
       if (error instanceof Error) {
@@ -22,11 +22,3 @@ export default class GetInfoSensorUseCase implements UseCase {
     }
   }
 }
-
-type Input = {
-  token: string;
-  startDate: string;
-  endDate: string;
-  offset: number;
-  softSensorId: string;
-};

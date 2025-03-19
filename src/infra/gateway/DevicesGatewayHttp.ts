@@ -1,5 +1,7 @@
 import DevicesGateway from '../../application/gateway/DevicesGateway';
 import Devices from '../../domain/entitis/Devices';
+import Sensor from '../../domain/entitis/Sensor';
+import SensorSoft from '../../domain/entitis/SensorSoft';
 import HttpClient from '../Http/HttpClient';
 
 export default class DevicesGatewayHttp implements DevicesGateway {
@@ -31,7 +33,15 @@ export default class DevicesGatewayHttp implements DevicesGateway {
   }
   async getDeviceBySerialNumber(token: string, sereialNumber: string): Promise<Devices> {
     const [data] = await this.httpClient.get(`${this.URL}/userdevices?serialNumbers=${sereialNumber}`, token);
-    return Devices.restore(
+    const sensors: Sensor[] = [];
+    const softSensor: SensorSoft[] = [];
+    data.sensors.map((d: any) => {
+      sensors.push(Sensor.restore(d.sensorId, d.sensorType, d.uom, d.channelNumber, d.customName, d.scadaTag));
+    });
+    data.softSensors.map((d: any) => {
+      softSensor.push(SensorSoft.restore(d.softSensorId, d.sensorType, d.uom, d.customName, d.scadaTag));
+    });
+    const output = Devices.restore(
       data.deviceId,
       data.deviceName,
       data.reference,
@@ -42,8 +52,9 @@ export default class DevicesGatewayHttp implements DevicesGateway {
       data.latitude,
       data.longitude,
       data.batteryPercentage,
-      data.sensors || [],
-      data.softSensors || []
+      sensors,
+      softSensor
     );
+    return output;
   }
 }
